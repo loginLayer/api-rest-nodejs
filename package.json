@@ -1,19 +1,21 @@
 {
-  "name": "pre_entrega_paul_v1",
+  "name": "entrega_final",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sistema de Gestión de Productos con Express y Firebase",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "keywords": [],
   "author": "Fernando Gomez Rojas",
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "express": "^5.1.0"
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "firebase": "^12.0.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

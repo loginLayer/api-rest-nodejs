@@ -1,70 +1,48 @@
-const products = [
-  {
-    id: 1,
-    name: "Smartphone X",
-    price: 699.99,
-    categories: ["Electronics", "Phones"]
-  },
-  {
-    id: 2,
-    name: "Laptop Pro",
-    price: 1200.00,
-    categories: ["Electronics", "Computers"]
-  },
-  {
-    id: 3,
-    name: "Wireless Headphones",
-    price: 149.95,
-    categories: ["Electronics", "Audio"]
-  },
-  {
-    id: 4,
-    name: "Mechanical Keyboard",
-    price: 85.50,
-    categories: ["Electronics", "Peripherals"]
-  },
-  {
-    id: 5,
-    name: "Smartwatch Lite",
-    price: 199.00,
-    categories: ["Electronics", "Wearables"]
-  },
-  {
-    id: 6,
-    name: "4K UHD TV",
-    price: 899.00,
-    categories: ["Electronics", "Televisions"]
-  },
-  {
-    id: 7,
-    name: "Gaming Mouse",
-    price: 55.00,
-    categories: ["Electronics", "Peripherals"]
-  },
-  {
-    id: 8,
-    name: "Portable Bluetooth Speaker",
-    price: 75.00,
-    categories: ["Electronics", "Audio"]
-  },
-  {
-    id: 9,
-    name: "External SSD 1TB",
-    price: 120.00,
-    categories: ["Electronics", "Storage"]
-  },
-  {
-    id: 10,
-    name: "Webcam HD",
-    price: 35.00,
-    categories: ["Electronics", "Peripherals"]
-  }
-]; 
+import { db } from "./firebase.js";
+import { collection, getDocs, doc, getDoc, addDoc, deleteDoc } from "firebase/firestore";
 
-export const getAllProducts = () => {
-    return products; 
+const productsCollection = collection(db, "products");
+
+export const getAllProducts = async () => {
+   try {
+     const snapshot = await getDocs(productsCollection);
+     return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data()}));
+   } catch (error) {
+      console.error(error);
+   }
 };
 
-export const getProductById = (id) => {
-    return products.find((item) => item.id == id); 
+export const getProductById = async (id) => {
+    try {
+      const productRef = doc(productsCollection, id);
+      const snapshot = await getDoc(productRef);
+      return snapshot.exists() ? { id : snapshot.id, ...snapshot.data() } : null;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const createProduct = async (data) => {
+  try {
+    const docRef = await addDoc(productsCollection, data);
+    return { id: docRef.id, ...data };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const productRef = doc(productsCollection, id);
+    const snapshot = await getDoc(productRef);
+
+    if (!snapshot.exists()) {
+      return false;
+    }
+
+    await deleteDoc(productRef);
+    return true;
+  } catch (error) {
+    console.error(error);
+  }
 };

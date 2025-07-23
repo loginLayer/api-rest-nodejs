@@ -1,8 +1,8 @@
 import * as Model from "../models/products.model.js";
 
-export const getAllProducts = (req, res) => {
+export const getAllProducts = async (req, res) => {
     const { category } = req.query;
-    const products = Model.getAllProducts();
+    const products = await Model.getAllProducts();
     if (category){
         const productsByCategory = products.filter((item) =>
             item.categories.includes(category)
@@ -12,8 +12,6 @@ export const getAllProducts = (req, res) => {
     }
     res.json(products);
 };
-
-
 
 export const searchProducts = (req, res) => {
     const { name } = req.query;
@@ -32,13 +30,32 @@ export const searchProducts = (req, res) => {
     res.json(productsFiltered);
 };
 
-
-export const getProductById = (req, res) => {
-    const id = parseInt(req.params.id);
+export const getProductById = async (req, res) => {
+    const id = req.params.id;
     const products = Model.getAllProducts();
-    const product = Model.getProductById(id);
+    const product = await Model.getProductById(id);
     if (!product) {
         res.status(404).json({ error: "No existe el producto"});
     }
     res.json(product);
+};
+
+export const createProduct = async (req, res) => {
+  const { name, price, categories } = req.body;
+
+  const product = await Model.createProduct({ name, price, categories });
+
+  res.status(201).json(product);
+};
+
+export const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+
+  const deleted = await Model.deleteProduct(id);
+
+  if (!deleted) {
+    return res.status(404).json({ error: "Producto no encontrado" });
+  }
+
+  res.status(204).send();
 };
