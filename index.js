@@ -20,7 +20,6 @@ app.get("/maintance", (req, res) => {
 });
 
 app.use(authRouter);
-
 app.use(notFound);
 
 const PORT = process.env.PORT || 3001;
